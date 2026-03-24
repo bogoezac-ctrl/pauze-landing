@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pauze — Join the Waitlist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ─── Reset & Base ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: #FAF6F1;
+    color: #2A1A2E;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ─── Design Tokens ─── */
+  :root {
+    --cream: #FAF6F1;
+    --cream-dark: #F2EAE0;
+    --terracotta: #C0674A;
+    --terracotta-light: #D4896E;
+    --rose: #D4A5A5;
+    --rose-soft: #EDD5CE;
+    --plum: #2A1A2E;
+    --plum-mid: #5C3D6B;
+    --plum-light: #8B6B9A;
+    --warm-white: #FFFBF7;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  /* ─── Grain texture overlay ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ─── Scroll animations (only active when JS has run) ─── */
+  .js-ready .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .js-ready .reveal.visible { opacity: 1; transform: translateY(0); }
+  .js-ready .reveal-delay-1 { transition-delay: 0.1s; }
+  .js-ready .reveal-delay-2 { transition-delay: 0.2s; }
+  .js-ready .reveal-delay-3 { transition-delay: 0.3s; }
+  .js-ready .reveal-delay-4 { transition-delay: 0.4s; }
+  .js-ready .reveal-delay-5 { transition-delay: 0.5s; }
+
+  /* ─── Nav ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(250, 246, 241, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(192, 103, 74, 0.1);
+  }
+  .nav-logo {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: var(--plum);
+    letter-spacing: -0.02em;
+  }
+  .nav-cta {
+    background: var(--terracotta);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 100px;
+    font-family: var(--sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    text-decoration: none;
+  }
+  .nav-cta:hover { background: var(--plum); transform: translateY(-1px); }
+
+  /* ─── Hero ─── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+    gap: 48px;
+  }
+
+  /* Blob backgrounds */
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .blob-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(212,165,165,0.35) 0%, transparent 70%);
+    top: -100px; right: -100px;
+  }
+  .blob-2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(192,103,74,0.2) 0%, transparent 70%);
+    bottom: 0; left: -50px;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+  }
+  .hero-eyebrow {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 20px;
+  }
+  .hero-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(3.5rem, 6vw, 5.5rem);
+    font-weight: 400;
+    color: var(--plum);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  .hero-tagline {
+    font-size: 1.125rem;
+    font-weight: 300;
+    color: var(--plum-mid);
+    max-width: 440px;
+    line-height: 1.65;
+    margin-bottom: 40px;
+  }
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--plum);
+    color: white;
+    padding: 16px 32px;
+    border-radius: 100px;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 32px rgba(42,26,46,0.2);
+  }
+  .btn-primary:hover {
+    background: var(--terracotta);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(192,103,74,0.35);
+  }
+  .btn-primary svg { width: 20px; height: 20px; }
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--plum);
+    padding: 16px 24px;
+    border-radius: 100px;
+    border: 1.5px solid rgba(42,26,46,0.25);
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 400;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  }
+  .btn-ghost:hover {
+    border-color: var(--terracotta);
+    color: var(--terracotta);
+    transform: translateY(-2px);
+    background: rgba(192,103,74,0.05);
+  }
+  .social-proof {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.875rem;
+    color: var(--plum-light);
+  }
+  .proof-avatars {
+    display: flex;
+  }
+  .proof-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--cream);
+    margin-left: -8px;
+  }
+  .proof-avatar:first-child { margin-left: 0; }
+  .proof-avatar-1 { background: linear-gradient(135deg, #C0674A, #D4A5A5); }
+  .proof-avatar-2 { background: linear-gradient(135deg, #8B6B9A, #C0674A); }
+  .proof-avatar-3 { background: linear-gradient(135deg, #D4A5A5, #8B6B9A); }
+  .proof-avatar-4 { background: linear-gradient(135deg, #5C3D6B, #D4A5A5); }
+
+  /* ─── iPhone Mockup ─── */
+  .hero-phone-wrap {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .phone-float {
+    animation: phoneFloat 6s ease-in-out infinite;
+  }
+  @keyframes phoneFloat {
+    0%, 100% { transform: translateY(0px) rotate(-2deg); }
+    50% { transform: translateY(-18px) rotate(-2deg); }
+  }
+  .iphone {
+    width: 260px;
+    height: 560px;
+    background: var(--plum);
+    border-radius: 44px;
+    position: relative;
+    box-shadow:
+      0 0 0 8px #1A0F1E,
+      0 0 0 10px rgba(255,255,255,0.08),
+      0 40px 100px rgba(42,26,46,0.45),
+      0 20px 40px rgba(42,26,46,0.3);
+  }
+  /* Side buttons */
+  .iphone::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 80px;
+    width: 4px;
+    height: 28px;
+    background: #1A0F1E;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 40px 0 #1A0F1E;
+  }
+  .iphone::after {
+    content: '';
+    position: absolute;
+    right: -12px;
+    top: 100px;
+    width: 4px;
+    height: 56px;
+    background: #1A0F1E;
+    border-radius: 0 2px 2px 0;
+  }
+  .iphone-screen {
+    position: absolute;
+    inset: 6px;
+    border-radius: 38px;
+    overflow: hidden;
+    background: linear-gradient(160deg, #2A1A2E 0%, #1A0F1E 40%, #3D1F3A 100%);
+  }
+  /* Dynamic Island */
+  .iphone-island {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 26px;
+    background: #0A060C;
+    border-radius: 14px;
+    z-index: 10;
+  }
+  /* Screen content */
+  .screen-content {
+    position: absolute;
+    inset: 0;
+    padding: 56px 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .screen-greeting {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 2px;
+  }
+  .screen-name {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: white;
+    margin-bottom: 12px;
+  }
+  .screen-card {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 12px 14px;
+    backdrop-filter: blur(10px);
+  }
+  .screen-card-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 4px;
+  }
+  .screen-card-value {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: white;
+  }
+  .screen-card-sub {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.45);
+    margin-top: 2px;
+  }
+  .screen-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .screen-chart {
+    height: 60px;
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    padding: 0 2px;
+  }
+  .chart-bar {
+    flex: 1;
+    background: linear-gradient(to top, rgba(192,103,74,0.8), rgba(212,165,165,0.4));
+    border-radius: 3px 3px 0 0;
+  }
+  .screen-flo {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #EDD5CE, #C0674A);
+    position: relative;
+    margin: 4px auto;
+    box-shadow: 0 4px 16px rgba(192,103,74,0.4);
+  }
+  .screen-flo::before {
+    content: '◡';
+    position: absolute;
+    top: 52%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    color: var(--plum);
+  }
+  .screen-pill {
+    display: inline-block;
+    background: rgba(192,103,74,0.3);
+    border: 1px solid rgba(192,103,74,0.4);
+    color: #EDD5CE;
+    font-size: 0.6rem;
+    padding: 3px 8px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── Section shared styles ─── */
+  section { position: relative; overflow: hidden; }
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+  .section-eyebrow {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    display: block;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 400;
+    color: var(--plum);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  /* ─── Problem Section ─── */
+  #problem {
+    padding: 100px 0;
+    background: var(--plum);
+  }
+  .problem-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .problem-header .section-eyebrow { color: var(--rose); }
+  .problem-header .section-title { color: var(--warm-white); }
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  .problem-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 40px 32px;
+    text-align: center;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .problem-card:hover {
+    background: rgba(255,255,255,0.09);
+    transform: translateY(-4px);
+  }
+  .problem-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 24px;
+    border-radius: 50%;
+    background: rgba(192,103,74,0.2);
+    border: 1px solid rgba(192,103,74,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+  .problem-statement {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--warm-white);
+    line-height: 1.4;
+    margin-bottom: 16px;
+  }
+  .problem-desc {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.6;
+  }
+
+  /* ─── Meet Flo ─── */
+  #flo {
+    padding: 120px 0;
+    background: var(--cream);
+  }
+  .flo-inner {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .flo-inner .section-title { margin-bottom: 16px; }
+  .flo-inner p {
+    font-size: 1.1rem;
+    color: var(--plum-mid);
+    margin-bottom: 64px;
+    font-weight: 300;
+  }
+  .flo-states {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+  .flo-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .flo-creature {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: relative;
+    transition: transform 0.3s;
+  }
+  .flo-creature:hover { transform: scale(1.08); }
+
+  /* Flo variants */
+  .flo-happy {
+    background: radial-gradient(circle at 35% 30%, #EDD5CE, #C0674A 60%, #8B4A35);
+    box-shadow: 0 12px 40px rgba(192,103,74,0.35);
+    animation: floBounceSoft 3s ease-in-out infinite;
+  }
+  .flo-celebrate {
+    background: radial-gradient(circle at 35% 30%, #F0D8EE, #8B6B9A 60%, #5C3D6B);
+    box-shadow: 0 12px 40px rgba(139,107,154,0.35);
+    animation: floBounceSoft 3s ease-in-out infinite 0.5s;
+  }
+  .flo-comfort {
+    background: radial-gradient(circle at 35% 30%, #EDD5CE, #D4A5A5 60%, #A87070);
+    box-shadow: 0 12px 40px rgba(212,165,165,0.4);
+    animation: floBounceSoft 3s ease-in-out infinite 1s;
+  }
+  @keyframes floBounceSoft {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* Flo face elements */
+  .flo-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .flo-eyes {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .flo-eye {
+    width: 10px;
+    height: 10px;
+    background: var(--plum);
+    border-radius: 50%;
+    position: relative;
+  }
+  /* Happy eyes — squint */
+  .flo-happy .flo-eye {
+    height: 6px;
+    border-radius: 50%;
+    background: var(--plum);
+  }
+  .flo-mouth {
+    width: 24px;
+    height: 12px;
+    border-bottom: 3px solid var(--plum);
+    border-left: 1px solid transparent;
+    border-right: 1px solid transparent;
+    border-radius: 0 0 24px 24px;
+  }
+  /* Celebrate mouth - big smile */
+  .flo-celebrate .flo-mouth {
+    width: 28px;
+    height: 14px;
+  }
+  /* Comfort mouth - neutral soft */
+  .flo-comfort .flo-mouth {
+    border-radius: 0 0 10px 10px;
+    width: 18px;
+    height: 8px;
+    opacity: 0.6;
+  }
+  /* Sparkles for celebrate */
+  .flo-sparkle {
+    position: absolute;
+    font-size: 1rem;
+    animation: sparkle 1.5s ease-in-out infinite;
+  }
+  .flo-sparkle:nth-child(1) { top: 0; right: 8px; animation-delay: 0s; }
+  .flo-sparkle:nth-child(2) { top: 8px; left: 2px; animation-delay: 0.5s; }
+  .flo-sparkle:nth-child(3) { bottom: 8px; right: 0; animation-delay: 1s; }
+  @keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1) rotate(15deg); }
+  }
+  .flo-state-label {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--plum);
+    font-weight: 400;
+  }
+  .flo-state-desc {
+    font-size: 0.85rem;
+    color: var(--plum-light);
+    text-align: center;
+    line-height: 1.5;
+  }
+  .flo-tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--plum-mid);
+    font-weight: 400;
+  }
+
+  /* ─── Features ─── */
+  #features {
+    padding: 120px 0;
+    background: var(--cream-dark);
+  }
+  .features-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 20px;
+  }
+  .feature-card {
+    background: var(--warm-white);
+    border-radius: 24px;
+    padding: 32px 28px;
+    border: 1px solid rgba(42,26,46,0.06);
+    box-shadow: 0 4px 24px rgba(42,26,46,0.06);
+    transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s;
+    cursor: default;
+  }
+  .feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(42,26,46,0.12);
+  }
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+  .feature-card:nth-child(1) .feature-icon { background: rgba(192,103,74,0.12); }
+  .feature-card:nth-child(2) .feature-icon { background: rgba(92,61,107,0.1); }
+  .feature-card:nth-child(3) .feature-icon { background: rgba(212,165,165,0.2); }
+  .feature-card:nth-child(4) .feature-icon { background: rgba(192,103,74,0.12); }
+  .feature-card:nth-child(5) .feature-icon { background: rgba(92,61,107,0.1); }
+  .feature-card:nth-child(6) .feature-icon { background: rgba(212,165,165,0.2); }
+  .feature-title {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--plum);
+    margin-bottom: 8px;
+  }
+  .feature-desc {
+    font-size: 0.9rem;
+    color: var(--plum-light);
+    line-height: 1.55;
+  }
+
+  /* ─── How It Works ─── */
+  #how {
+    padding: 120px 0;
+    background: var(--cream);
+  }
+  .how-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+  .how-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+  }
+  .how-step {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .how-step.reversed { direction: rtl; }
+  .how-step.reversed > * { direction: ltr; }
+  .step-content { position: relative; }
+  .step-number {
+    font-family: var(--serif);
+    font-size: 9rem;
+    font-weight: 600;
+    color: rgba(42,26,46,0.06);
+    line-height: 1;
+    position: absolute;
+    top: -30px;
+    left: -20px;
+    z-index: 0;
+    user-select: none;
+  }
+  .step-text { position: relative; z-index: 1; }
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(192,103,74,0.1);
+    color: var(--terracotta);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+  .step-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--plum);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .step-desc {
+    font-size: 1rem;
+    color: var(--plum-mid);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+  .step-phone {
+    display: flex;
+    justify-content: center;
+  }
+  /* Smaller step mockups */
+  .iphone-sm {
+    width: 200px;
+    height: 432px;
+    background: var(--plum);
+    border-radius: 36px;
+    position: relative;
+    box-shadow:
+      0 0 0 6px #1A0F1E,
+      0 0 0 8px rgba(255,255,255,0.06),
+      0 32px 80px rgba(42,26,46,0.35);
+  }
+  .iphone-sm::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 80px;
+    width: 3px;
+    height: 44px;
+    background: #1A0F1E;
+    border-radius: 0 2px 2px 0;
+  }
+  .iphone-sm-screen {
+    position: absolute;
+    inset: 5px;
+    border-radius: 31px;
+    overflow: hidden;
+  }
+  .iphone-sm-island {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 64px;
+    height: 20px;
+    background: #0A060C;
+    border-radius: 12px;
+    z-index: 10;
+  }
+  /* Step 1 screen — log */
+  .screen-step1 {
+    background: linear-gradient(160deg, #2A1A2E 0%, #1A0F1E 100%);
+    position: absolute;
+    inset: 0;
+    padding: 44px 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .log-title { font-family: var(--serif); font-style: italic; font-size: 0.95rem; color: white; margin-bottom: 4px; }
+  .log-question { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+  .symptom-chip {
+    display: inline-block;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.85);
+    font-size: 0.65rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin: 3px;
+  }
+  .symptom-chip.active {
+    background: rgba(192,103,74,0.35);
+    border-color: rgba(192,103,74,0.5);
+    color: #EDD5CE;
+  }
+  .chips-wrap { line-height: 1.8; }
+  .screen-log-btn {
+    margin-top: auto;
+    background: var(--terracotta);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 500;
+  }
+  /* Step 2 screen — patterns */
+  .screen-step2 {
+    background: linear-gradient(160deg, #3D1F3A 0%, #1A0F1E 100%);
+    position: absolute;
+    inset: 0;
+    padding: 44px 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pattern-header { font-family: var(--serif); font-style: italic; font-size: 0.95rem; color: white; }
+  .pattern-chart { flex: 1; display: flex; flex-direction: column; gap: 6px; justify-content: center; }
+  .pattern-row { display: flex; align-items: center; gap: 8px; }
+  .pattern-label { font-size: 0.6rem; color: rgba(255,255,255,0.45); width: 44px; flex-shrink: 0; }
+  .pattern-bar-wrap { flex: 1; height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+  .pattern-bar { height: 100%; border-radius: 4px; }
+  /* Step 3 screen — insight */
+  .screen-step3 {
+    background: linear-gradient(160deg, #2A1A2E 0%, #3D1F3A 100%);
+    position: absolute;
+    inset: 0;
+    padding: 44px 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .insight-card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 12px;
+  }
+  .insight-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 4px; }
+  .insight-value { font-family: var(--serif); font-size: 1.1rem; color: white; }
+  .insight-trend { font-size: 0.6rem; color: rgba(192,103,74,0.9); margin-top: 2px; }
+
+  /* ─── Testimonials ─── */
+  #testimonials {
+    padding: 120px 0;
+    background: var(--cream-dark);
+    position: relative;
+  }
+  .testimonials-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .testimonial-card {
+    background: var(--warm-white);
+    border-radius: 24px;
+    padding: 36px 32px;
+    border: 1px solid rgba(42,26,46,0.06);
+    box-shadow: 0 4px 24px rgba(42,26,46,0.05);
+    position: relative;
+  }
+  .testimonial-quote-mark {
+    font-family: var(--serif);
+    font-size: 5rem;
+    line-height: 0.5;
+    color: rgba(192,103,74,0.15);
+    position: absolute;
+    top: 28px;
+    left: 24px;
+    font-style: italic;
+  }
+  .testimonial-text {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--plum);
+    line-height: 1.65;
+    font-weight: 400;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 24px;
+    margin-top: 20px;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .testimonial-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .t-avatar-1 { background: linear-gradient(135deg, #C0674A, #EDD5CE); }
+  .t-avatar-2 { background: linear-gradient(135deg, #8B6B9A, #D4A5A5); }
+  .t-avatar-3 { background: linear-gradient(135deg, #5C3D6B, #C0674A); }
+  .testimonial-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--plum);
+  }
+  .testimonial-meta {
+    font-size: 0.8rem;
+    color: var(--plum-light);
+  }
+
+  /* ─── Download CTA ─── */
+  #waitlist {
+    padding: 120px 48px;
+    background: linear-gradient(135deg, var(--plum) 0%, #3D1F3A 40%, #5C3D6B 100%);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #waitlist .blob-3 {
+    position: absolute;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(192,103,74,0.25) 0%, transparent 70%);
+    top: -200px; right: -200px;
+    filter: blur(60px);
+    pointer-events: none;
+  }
+  #waitlist .blob-4 {
+    position: absolute;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(212,165,165,0.2) 0%, transparent 70%);
+    bottom: -100px; left: -100px;
+    filter: blur(60px);
+    pointer-events: none;
+  }
+  .download-content { position: relative; z-index: 1; }
+  .download-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 400;
+    color: var(--warm-white);
+    max-width: 680px;
+    margin: 0 auto 40px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .app-store-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    color: var(--plum);
+    padding: 16px 32px;
+    border-radius: 16px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    margin-bottom: 24px;
+  }
+  .app-store-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+  }
+  .app-store-btn svg { width: 28px; height: 28px; }
+  .app-store-text { text-align: left; }
+  .app-store-text-small { font-size: 0.72rem; color: var(--plum-mid); line-height: 1; }
+  .app-store-text-big { font-size: 1.05rem; font-weight: 600; color: var(--plum); line-height: 1.3; }
+  .download-fine-print {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* ─── Footer ─── */
+  footer {
+    background: var(--plum);
+    padding: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .footer-logo {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: -0.02em;
+  }
+  .footer-links {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .footer-links a {
+    color: rgba(255,255,255,0.45);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: rgba(255,255,255,0.85); }
+  .footer-ig {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .footer-ig:hover {
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.06);
+  }
+  .footer-ig svg { width: 16px; height: 16px; fill: rgba(255,255,255,0.55); }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    #hero {
+      grid-template-columns: 1fr;
+      padding: 100px 24px 60px;
+      text-align: center;
+    }
+    .hero-content { display: flex; flex-direction: column; align-items: center; }
+    .hero-tagline { max-width: 100%; }
+    .hero-buttons { justify-content: center; }
+    .social-proof { justify-content: center; }
+    .hero-phone-wrap { order: -1; padding-top: 20px; }
+    .iphone { width: 200px; height: 432px; }
+    .problem-grid { grid-template-columns: 1fr; gap: 20px; }
+    .flo-states { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .flo-creature { width: 72px; height: 72px; }
+    .bento-grid { grid-template-columns: repeat(2, 1fr); }
+    .how-step { grid-template-columns: 1fr; gap: 32px; }
+    .how-step.reversed { direction: ltr; }
+    .step-number { font-size: 6rem; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .container { padding: 0 24px; }
+    footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; }
+    #waitlist { padding: 80px 24px; }
+  }
+
+  @media (max-width: 600px) {
+    .bento-grid { grid-template-columns: 1fr; }
+    .flo-states { grid-template-columns: 1fr; gap: 24px; }
+    .iphone { width: 180px; height: 390px; }
+    .hero-title { font-size: 3rem; }
+    .btn-primary, .btn-ghost { padding: 14px 24px; font-size: 0.9rem; }
+    .waitlist-form-row { flex-direction: column; }
+    .waitlist-form-row .waitlist-input { border-radius: 14px; }
+    .waitlist-form-row .waitlist-submit { border-radius: 14px; width: 100%; justify-content: center; }
+  }
+
+  /* ─── Waitlist Form ─── */
+  .waitlist-form-wrap { width: 100%; max-width: 520px; }
+  .waitlist-form-row {
+    display: flex;
+    gap: 10px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    padding: 6px 6px 6px 20px;
+  }
+  .waitlist-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--plum);
+    min-width: 0;
+  }
+  .waitlist-input::placeholder { color: rgba(42,26,46,0.4); }
+  .waitlist-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--plum);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .waitlist-submit:hover { background: var(--terracotta); transform: translateY(-1px); }
+  .waitlist-note {
+    margin-top: 12px;
+    font-size: 0.8rem;
+    color: rgba(42,26,46,0.45);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  /* Hero form variant — on cream bg */
+  .hero-waitlist .waitlist-form-row {
+    background: rgba(255,255,255,0.7);
+    border-color: rgba(42,26,46,0.12);
+    box-shadow: 0 4px 24px rgba(42,26,46,0.08);
+  }
+  .hero-waitlist .waitlist-input { color: var(--plum); }
+
+  /* Download section form variant — on dark bg */
+  .dark-waitlist .waitlist-form-row {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+  }
+  .dark-waitlist .waitlist-input { color: white; }
+  .dark-waitlist .waitlist-input::placeholder { color: rgba(255,255,255,0.4); }
+  .dark-waitlist .waitlist-submit { background: white; color: var(--plum); }
+  .dark-waitlist .waitlist-submit:hover { background: var(--rose-soft); }
+  .dark-waitlist .waitlist-note { color: rgba(255,255,255,0.4); }
+
+  /* Success state */
+  .waitlist-success {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .dark-waitlist .waitlist-success { align-items: center; }
+  .waitlist-success.show { display: flex; }
+  .waitlist-success-icon {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: rgba(192,103,74,0.15);
+    border: 1.5px solid rgba(192,103,74,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+  }
+  .dark-waitlist .waitlist-success-icon {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.25);
+  }
+  .waitlist-success-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--plum);
+    font-weight: 400;
+  }
+  .dark-waitlist .waitlist-success-title { color: white; }
+  .waitlist-success-sub {
+    font-size: 0.875rem;
+    color: var(--plum-light);
+  }
+  .dark-waitlist .waitlist-success-sub { color: rgba(255,255,255,0.55); }
+
+  /* Coming soon badge */
+  .coming-soon-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(192,103,74,0.12);
+    border: 1px solid rgba(192,103,74,0.25);
+    color: var(--terracotta);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+  }
+  .coming-soon-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* Waitlist counter chip */
+  .waitlist-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    color: var(--plum-light);
+    margin-top: 4px;
+  }
+  .counter-avatars { display: flex; }
+  .counter-avatar {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--cream);
+    margin-left: -6px;
+  }
+  .counter-avatar:first-child { margin-left: 0; }
+  .ca-1 { background: linear-gradient(135deg, #C0674A, #D4A5A5); }
+  .ca-2 { background: linear-gradient(135deg, #8B6B9A, #C0674A); }
+  .ca-3 { background: linear-gradient(135deg, #D4A5A5, #8B6B9A); }
+  .ca-4 { background: linear-gradient(135deg, #5C3D6B, #D4A5A5); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Pauze</div>
+  <a href="#waitlist" class="nav-cta">Join the Waitlist</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <div class="hero-content">
+    <div class="reveal">
+      <div class="coming-soon-badge">
+        <span class="coming-soon-dot"></span>
+        Coming soon to iOS
+      </div>
+    </div>
+    <h1 class="hero-title reveal reveal-delay-1">Pauze</h1>
+    <p class="hero-tagline reveal reveal-delay-2">Your body is changing. Finally, an app that helps you understand it.</p>
+    <div class="hero-waitlist reveal reveal-delay-3">
+      <div class="waitlist-form-wrap">
+        <form class="waitlist-form" data-form="hero">
+          <div class="waitlist-form-row">
+            <input class="waitlist-input" type="email" placeholder="your@email.com" required autocomplete="email">
+            <button class="waitlist-submit" type="submit">
+              Get early access
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 7h12M8 2l5 5-5 5"/></svg>
+            </button>
+          </div>
+          <p class="waitlist-note">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 1a5 5 0 100 10A5 5 0 006 1zm0 3v2.5L7.5 8"/></svg>
+            Be first to know when we launch. No spam, ever.
+          </p>
+        </form>
+        <div class="waitlist-success">
+          <div class="waitlist-success-icon">✦</div>
+          <div class="waitlist-success-title">You're on the list.</div>
+          <div class="waitlist-success-sub">We'll email you the moment Pauze launches.</div>
+        </div>
+      </div>
+    </div>
+    <div class="waitlist-counter reveal reveal-delay-4">
+      <div class="counter-avatars">
+        <div class="counter-avatar ca-1"></div>
+        <div class="counter-avatar ca-2"></div>
+        <div class="counter-avatar ca-3"></div>
+        <div class="counter-avatar ca-4"></div>
+      </div>
+      2,400+ women already waiting
+    </div>
+  </div>
+
+  <div class="hero-phone-wrap reveal reveal-delay-2">
+    <div class="phone-float">
+      <div class="iphone">
+        <div class="iphone-screen">
+          <div class="iphone-island"></div>
+          <div class="screen-content">
+            <div class="screen-greeting">Good morning,</div>
+            <div class="screen-name">Sarah ✦</div>
+
+            <div class="screen-card">
+              <div class="screen-card-label">Today's Wellbeing</div>
+              <div class="screen-card-value">7.2 / 10</div>
+              <div class="screen-card-sub">Better than your Tuesday average</div>
+            </div>
+
+            <div class="screen-row">
+              <div class="screen-card">
+                <div class="screen-card-label">Sleep</div>
+                <div class="screen-card-value" style="font-size:1.1rem">6h 40m</div>
+                <div class="screen-card-sub">1 wake-up</div>
+              </div>
+              <div class="screen-card">
+                <div class="screen-card-label">Mood</div>
+                <div class="screen-card-value" style="font-size:1.1rem">Calm</div>
+                <div class="screen-card-sub">↑ vs yesterday</div>
+              </div>
+            </div>
+
+            <div class="screen-card">
+              <div class="screen-card-label">Symptom trend — 7 days</div>
+              <div class="screen-chart">
+                <div class="chart-bar" style="height:45%"></div>
+                <div class="chart-bar" style="height:70%"></div>
+                <div class="chart-bar" style="height:55%"></div>
+                <div class="chart-bar" style="height:80%"></div>
+                <div class="chart-bar" style="height:60%"></div>
+                <div class="chart-bar" style="height:40%"></div>
+                <div class="chart-bar" style="height:50%"></div>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+              <div class="screen-flo"></div>
+              <div>
+                <div style="font-size:0.65rem;color:rgba(255,255,255,0.6);margin-bottom:3px;">Flo says</div>
+                <div style="font-size:0.7rem;color:rgba(255,255,255,0.85);font-style:italic;font-family:'Cormorant Garamond',serif">"You're doing really well this week."</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="container">
+    <div class="problem-header">
+      <span class="section-eyebrow reveal">You're not imagining it</span>
+      <h2 class="section-title reveal reveal-delay-1">Sound familiar?</h2>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card reveal">
+        <div class="problem-icon">🌙</div>
+        <p class="problem-statement">"The 3am wake-ups no one warned you about."</p>
+        <p class="problem-desc">You stare at the ceiling, heart racing, wondering if this is just stress — or something more.</p>
+      </div>
+      <div class="problem-card reveal reveal-delay-1">
+        <div class="problem-icon">🌫</div>
+        <p class="problem-statement">"Brain fog that makes you feel like you're losing it."</p>
+        <p class="problem-desc">You've always been sharp. So why do words escape you, and thoughts feel like they're underwater?</p>
+      </div>
+      <div class="problem-card reveal reveal-delay-2">
+        <div class="problem-icon">🧩</div>
+        <p class="problem-statement">"Symptoms nobody connects until it's too late."</p>
+        <p class="problem-desc">The anxiety, the joint pain, the changes in your skin — each dismissed in isolation. They're not separate.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEET FLO -->
+<section id="flo">
+  <div class="container">
+    <div class="flo-inner">
+      <span class="section-eyebrow reveal">Your companion</span>
+      <h2 class="section-title reveal reveal-delay-1">Meet Flo</h2>
+      <p class="reveal reveal-delay-2">She's warm, expressive, and entirely on your side. Flo learns how you feel and shows up differently depending on where you are.</p>
+
+      <div class="flo-states">
+        <!-- Happy -->
+        <div class="flo-state reveal">
+          <div class="flo-creature flo-happy">
+            <div class="flo-face">
+              <div class="flo-eyes">
+                <div class="flo-eye"></div>
+                <div class="flo-eye"></div>
+              </div>
+              <div class="flo-mouth"></div>
+            </div>
+          </div>
+          <span class="flo-state-label">Logging day</span>
+          <span class="flo-state-desc">Flo celebrates your consistency and cheers you on.</span>
+        </div>
+        <!-- Celebrate -->
+        <div class="flo-state reveal reveal-delay-1">
+          <div class="flo-creature flo-celebrate" style="position:relative">
+            <div class="flo-face">
+              <div class="flo-eyes">
+                <div class="flo-eye" style="width:12px;height:12px"></div>
+                <div class="flo-eye" style="width:12px;height:12px"></div>
+              </div>
+              <div class="flo-mouth"></div>
+            </div>
+            <span class="flo-sparkle">✦</span>
+            <span class="flo-sparkle">✧</span>
+            <span class="flo-sparkle">✦</span>
+          </div>
+          <span class="flo-state-label">Streak milestone</span>
+          <span class="flo-state-desc">A 7-day streak? Flo throws a tiny party just for you.</span>
+        </div>
+        <!-- Comfort -->
+        <div class="flo-state reveal reveal-delay-2">
+          <div class="flo-creature flo-comfort">
+            <div class="flo-face">
+              <div class="flo-eyes">
+                <div class="flo-eye" style="width:8px;height:8px;opacity:0.7"></div>
+                <div class="flo-eye" style="width:8px;height:8px;opacity:0.7"></div>
+              </div>
+              <div class="flo-mouth"></div>
+            </div>
+          </div>
+          <span class="flo-state-label">Hard day</span>
+          <span class="flo-state-desc">Flo sits quietly with you. No pressure, just presence.</span>
+        </div>
+      </div>
+
+      <p class="flo-tagline reveal">"Flo is with you every step of the way."</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="features-header">
+      <span class="section-eyebrow reveal">Built around you</span>
+      <h2 class="section-title reveal reveal-delay-1">Everything you need, nothing you don't</h2>
+    </div>
+    <div class="bento-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Symptom Tracking</div>
+        <p class="feature-desc">Log up to 40+ menopause symptoms in under 30 seconds. Pauze builds your personal picture over time.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">🌙</div>
+        <div class="feature-title">Sleep Insights</div>
+        <p class="feature-desc">See how night sweats, anxiety, and hormonal shifts are affecting your sleep quality and energy levels.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">🎭</div>
+        <div class="feature-title">Mood Patterns</div>
+        <p class="feature-desc">Understand your emotional rhythms across weeks and months — not just day to day.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Trigger Detection</div>
+        <p class="feature-desc">Pauze analyses your data to surface what's making things worse — food, stress, sleep, or more.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-4">
+        <div class="feature-icon">📖</div>
+        <div class="feature-title">Learn Hub</div>
+        <p class="feature-desc">Evidence-based articles written for real women. No jargon, no fear-mongering — just clarity.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-5">
+        <div class="feature-icon">🩺</div>
+        <div class="feature-title">Doctor Reports</div>
+        <p class="feature-desc">Export a clean, structured summary of your symptoms to share with your GP or specialist.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="how-header">
+      <span class="section-eyebrow reveal">Three simple steps</span>
+      <h2 class="section-title reveal reveal-delay-1">How Pauze works</h2>
+    </div>
+    <div class="how-steps">
+
+      <!-- Step 1 -->
+      <div class="how-step">
+        <div class="step-content reveal">
+          <div class="step-number">01</div>
+          <div class="step-text">
+            <span class="step-badge">Step 1</span>
+            <h3 class="step-title">Log how you feel — takes 30 seconds</h3>
+            <p class="step-desc">A gentle daily check-in. Tap your symptoms, mood, and sleep quality. No lengthy forms, no medical jargon. Just a quick, honest moment with yourself.</p>
+          </div>
+        </div>
+        <div class="step-phone reveal reveal-delay-2">
+          <div class="iphone-sm">
+            <div class="iphone-sm-screen">
+              <div class="iphone-sm-island"></div>
+              <div class="screen-step1">
+                <div class="log-title">How are you today?</div>
+                <div class="log-question">Tap everything that applies</div>
+                <div class="chips-wrap">
+                  <span class="symptom-chip active">Hot flushes</span>
+                  <span class="symptom-chip">Night sweats</span>
+                  <span class="symptom-chip active">Brain fog</span>
+                  <span class="symptom-chip">Anxiety</span>
+                  <span class="symptom-chip active">Low energy</span>
+                  <span class="symptom-chip">Joint pain</span>
+                  <span class="symptom-chip">Irritability</span>
+                  <span class="symptom-chip">Dry skin</span>
+                </div>
+                <div class="screen-log-btn">Log today →</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="how-step reversed">
+        <div class="step-content reveal">
+          <div class="step-number">02</div>
+          <div class="step-text">
+            <span class="step-badge">Step 2</span>
+            <h3 class="step-title">Pauze finds your patterns</h3>
+            <p class="step-desc">Behind the scenes, Pauze connects the dots. It notices what flares up after poor sleep, which days feel harder, and what's quietly improving. Patterns you'd never spot alone.</p>
+          </div>
+        </div>
+        <div class="step-phone reveal reveal-delay-2">
+          <div class="iphone-sm">
+            <div class="iphone-sm-screen">
+              <div class="iphone-sm-island"></div>
+              <div class="screen-step2">
+                <div class="pattern-header">Your patterns this month</div>
+                <div class="pattern-chart">
+                  <div class="pattern-row">
+                    <div class="pattern-label">Hot flush</div>
+                    <div class="pattern-bar-wrap"><div class="pattern-bar" style="width:78%;background:linear-gradient(to right,#C0674A,#D4A5A5)"></div></div>
+                  </div>
+                  <div class="pattern-row">
+                    <div class="pattern-label">Poor sleep</div>
+                    <div class="pattern-bar-wrap"><div class="pattern-bar" style="width:62%;background:linear-gradient(to right,#8B6B9A,#D4A5A5)"></div></div>
+                  </div>
+                  <div class="pattern-row">
+                    <div class="pattern-label">Brain fog</div>
+                    <div class="pattern-bar-wrap"><div class="pattern-bar" style="width:45%;background:linear-gradient(to right,#5C3D6B,#8B6B9A)"></div></div>
+                  </div>
+                  <div class="pattern-row">
+                    <div class="pattern-label">Anxiety</div>
+                    <div class="pattern-bar-wrap"><div class="pattern-bar" style="width:55%;background:linear-gradient(to right,#C0674A,#8B6B9A)"></div></div>
+                  </div>
+                  <div class="pattern-row">
+                    <div class="pattern-label">Low mood</div>
+                    <div class="pattern-bar-wrap"><div class="pattern-bar" style="width:30%;background:linear-gradient(to right,#D4A5A5,#EDD5CE)"></div></div>
+                  </div>
+                </div>
+                <div style="font-size:0.6rem;color:rgba(255,255,255,0.35);text-align:center">Pauze detected a link between sleep & hot flushes</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="how-step">
+        <div class="step-content reveal">
+          <div class="step-number">03</div>
+          <div class="step-text">
+            <span class="step-badge">Step 3</span>
+            <h3 class="step-title">Feel in control of your body again</h3>
+            <p class="step-desc">When you understand what's happening, it becomes manageable. Share insights with your doctor, make informed decisions, and finally stop wondering why you feel the way you do.</p>
+          </div>
+        </div>
+        <div class="step-phone reveal reveal-delay-2">
+          <div class="iphone-sm">
+            <div class="iphone-sm-screen">
+              <div class="iphone-sm-island"></div>
+              <div class="screen-step3">
+                <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.95rem;color:white;margin-bottom:6px">Your weekly insight</div>
+                <div class="insight-card">
+                  <div class="insight-label">Key finding</div>
+                  <div class="insight-value">Sleep is your lever</div>
+                  <div class="insight-trend">↓ 40% fewer hot flushes on 7h+ sleep nights</div>
+                </div>
+                <div class="insight-card">
+                  <div class="insight-label">This week vs last</div>
+                  <div class="insight-value">Mood +18%</div>
+                  <div class="insight-trend">↑ Your best week this month</div>
+                </div>
+                <div class="insight-card">
+                  <div class="insight-label">Doctor report</div>
+                  <div class="insight-value" style="font-size:0.85rem">Ready to export</div>
+                  <div class="insight-trend">28-day summary prepared</div>
+                </div>
+                <div style="margin-top:auto;background:rgba(192,103,74,0.25);border-radius:12px;padding:10px;text-align:center;font-size:0.65rem;color:#EDD5CE;font-style:italic;font-family:'Cormorant Garamond',serif">"You're more in control than you think."</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="container">
+    <div class="testimonials-header">
+      <span class="section-eyebrow reveal">Real women, real words</span>
+      <h2 class="section-title reveal reveal-delay-1">They finally felt understood</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-quote-mark">"</div>
+        <p class="testimonial-text">I'd been dismissing so many things for years — the 3am wake-ups, the sudden rushes of heat, the days I couldn't think straight. Pauze showed me they were all connected. I finally had something to show my doctor that she actually took seriously.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar t-avatar-1"></div>
+          <div>
+            <div class="testimonial-name">Rachel</div>
+            <div class="testimonial-meta">51, London</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-1">
+        <div class="testimonial-quote-mark">"</div>
+        <p class="testimonial-text">I'm a very private person but Flo doesn't feel intrusive — she feels like she gets it. Some mornings she just sits quietly in the app and I appreciate that more than I expected to. It's a small thing but it means a lot.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar t-avatar-2"></div>
+          <div>
+            <div class="testimonial-name">Caroline</div>
+            <div class="testimonial-meta">47, Edinburgh</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-2">
+        <div class="testimonial-quote-mark">"</div>
+        <p class="testimonial-text">I thought I was just getting old and moody. Pauze made me realise I was in perimenopause and had been for almost two years. Understanding that changed everything — I stopped blaming myself and started taking care of myself.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar t-avatar-3"></div>
+          <div>
+            <div class="testimonial-name">Diane</div>
+            <div class="testimonial-meta">45, Melbourne</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST CTA -->
+<section id="waitlist">
+  <div class="blob-3"></div>
+  <div class="blob-4"></div>
+  <div class="download-content">
+    <h2 class="download-title reveal">You deserve to understand what your body is going through.</h2>
+    <p class="reveal reveal-delay-1" style="color:rgba(255,255,255,0.6);font-size:1.05rem;margin-bottom:36px;font-weight:300">Pauze is launching soon. Get early access and be the first to know.</p>
+    <div class="dark-waitlist reveal reveal-delay-2" style="display:flex;flex-direction:column;align-items:center;gap:0">
+      <div class="waitlist-form-wrap" style="max-width:480px">
+        <form class="waitlist-form" data-form="bottom">
+          <div class="waitlist-form-row">
+            <input class="waitlist-input" type="email" placeholder="your@email.com" required autocomplete="email">
+            <button class="waitlist-submit" type="submit">Join the waitlist</button>
+          </div>
+          <p class="waitlist-note" style="justify-content:center">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 1a5 5 0 100 10A5 5 0 006 1zm0 3v2.5L7.5 8"/></svg>
+            Free. No credit card. Launching on iOS.
+          </p>
+        </form>
+        <div class="waitlist-success" style="justify-content:center">
+          <div class="waitlist-success-icon">✦</div>
+          <div class="waitlist-success-title">You're on the list.</div>
+          <div class="waitlist-success-sub">We'll email you the moment Pauze launches.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Pauze</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+    <a href="#" class="footer-ig" aria-label="Instagram">
+      <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+    </a>
+  </div>
+</footer>
+
+<script>
+  // Enable animations only when JS is running
+  document.documentElement.classList.add('js-ready');
+
+  // Prevent browser from scrolling to a hash anchor on refresh
+  if (window.location.hash) {
+    history.replaceState(null, '', window.location.pathname);
+    window.scrollTo(0, 0);
+  }
+
+  // Intersection Observer for scroll reveals
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  revealEls.forEach(el => observer.observe(el));
+
+  // Waitlist form handling
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx37QbzzQDWNKpMnnmz1HwyeFCYqWG-ncqUe06red8NqWaqbtawjxdHKXIZrWpXtd4H/exec';
+
+  document.querySelectorAll('.waitlist-form').forEach(form => {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = this.querySelector('.waitlist-input').value;
+      const wrap = this.closest('.waitlist-form-wrap');
+
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors', // required — Apps Script doesn't return CORS headers
+          body: JSON.stringify({ email }),
+        });
+      } catch (_) {}
+
+      this.style.display = 'none';
+      wrap.querySelector('.waitlist-success').classList.add('show');
+    });
+  });
+
+  // Smooth nav background on scroll
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      nav.style.borderBottomColor = 'rgba(192,103,74,0.15)';
+    } else {
+      nav.style.borderBottomColor = 'rgba(192,103,74,0.1)';
+    }
+  }, { passive: true });
+</script>
+</body>
+</html>
