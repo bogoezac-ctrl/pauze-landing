@@ -1075,24 +1075,18 @@
     }
     .waitlist-form-row {
       flex-direction: column;
-      border-radius: 20px;
-      padding: 10px;
-      gap: 8px;
+      gap: 10px;
       align-items: stretch;
     }
     .waitlist-input {
-      padding: 14px 16px;
+      padding: 15px 20px;
       font-size: 1rem;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.15);
-    }
-    .hero-waitlist .waitlist-input {
-      background: rgba(42,26,46,0.06);
+      border-radius: 14px;
     }
     .waitlist-submit {
       width: 100%;
       justify-content: center;
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 15px 20px;
     }
     .waitlist-note { justify-content: center; text-align: center; }
@@ -1107,20 +1101,21 @@
   .waitlist-form-row {
     display: flex;
     gap: 10px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 100px;
-    padding: 8px 8px 8px 24px;
+    background: none;
+    border: none;
+    padding: 0;
   }
   .waitlist-input {
     flex: 1;
-    background: transparent;
-    border: none;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 100px;
     outline: none;
     font-family: var(--sans);
     font-size: 0.95rem;
     color: var(--plum);
     min-width: 0;
+    padding: 14px 20px;
   }
   .waitlist-input::placeholder { color: rgba(42,26,46,0.4); }
   .waitlist-submit {
@@ -1151,19 +1146,19 @@
   }
   /* Hero form variant — on cream bg */
   .hero-waitlist { width: 100%; max-width: 520px; }
-  .hero-waitlist .waitlist-form-row {
-    background: rgba(255,255,255,0.7);
+  .hero-waitlist .waitlist-input {
+    background: rgba(255,255,255,0.85);
     border-color: rgba(42,26,46,0.12);
-    box-shadow: 0 4px 24px rgba(42,26,46,0.08);
+    box-shadow: 0 2px 12px rgba(42,26,46,0.06);
+    color: var(--plum);
   }
-  .hero-waitlist .waitlist-input { color: var(--plum); }
 
   /* Download section form variant — on dark bg */
-  .dark-waitlist .waitlist-form-row {
+  .dark-waitlist .waitlist-input {
     background: rgba(255,255,255,0.1);
     border-color: rgba(255,255,255,0.2);
+    color: white;
   }
-  .dark-waitlist .waitlist-input { color: white; }
   .dark-waitlist .waitlist-input::placeholder { color: rgba(255,255,255,0.4); }
   .dark-waitlist .waitlist-submit { background: white; color: var(--plum); }
   .dark-waitlist .waitlist-submit:hover { background: var(--rose-soft); }
