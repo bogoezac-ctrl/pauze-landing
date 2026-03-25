@@ -1044,6 +1044,7 @@
     .hero-tagline { max-width: 100%; }
     .hero-buttons { justify-content: center; }
     .social-proof { justify-content: center; }
+    .waitlist-counter { align-self: center; }
     .hero-phone-wrap { order: -1; padding-top: 20px; }
     .iphone { width: 200px; height: 432px; }
     .problem-grid { grid-template-columns: 1fr; gap: 20px; }
@@ -1068,30 +1069,37 @@
     .btn-primary, .btn-ghost { padding: 14px 24px; font-size: 0.9rem; }
 
     /* Waitlist form — stacked card layout on mobile */
-    .waitlist-form-wrap { max-width: 100%; }
+    .waitlist-form-wrap {
+      max-width: 100%;
+      margin: 0 auto;
+    }
     .waitlist-form-row {
       flex-direction: column;
       border-radius: 20px;
-      padding: 12px;
+      padding: 10px;
       gap: 8px;
       align-items: stretch;
     }
     .waitlist-input {
-      padding: 13px 16px;
+      padding: 14px 16px;
       font-size: 1rem;
       border-radius: 12px;
-      background: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.15);
     }
     .hero-waitlist .waitlist-input {
-      background: rgba(255,255,255,0.5);
+      background: rgba(42,26,46,0.06);
     }
     .waitlist-submit {
       width: 100%;
       justify-content: center;
       border-radius: 12px;
-      padding: 14px 20px;
+      padding: 15px 20px;
     }
-    .hero-waitlist { width: 100%; }
+    .waitlist-note { justify-content: center; text-align: center; }
+    .hero-waitlist {
+      width: 100%;
+      padding: 0 4px;
+    }
   }
 
   /* ─── Waitlist Form ─── */
