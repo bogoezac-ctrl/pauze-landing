@@ -1040,7 +1040,7 @@
       padding: 100px 24px 60px;
       text-align: center;
     }
-    .hero-content { display: flex; flex-direction: column; align-items: center; }
+    .hero-content { display: flex; flex-direction: column; align-items: center; width: 100%; }
     .hero-tagline { max-width: 100%; }
     .hero-buttons { justify-content: center; }
     .social-proof { justify-content: center; }
@@ -1066,9 +1066,32 @@
     .iphone { width: 180px; height: 390px; }
     .hero-title { font-size: 3rem; }
     .btn-primary, .btn-ghost { padding: 14px 24px; font-size: 0.9rem; }
-    .waitlist-form-row { flex-direction: column; }
-    .waitlist-form-row .waitlist-input { border-radius: 14px; }
-    .waitlist-form-row .waitlist-submit { border-radius: 14px; width: 100%; justify-content: center; }
+
+    /* Waitlist form — stacked card layout on mobile */
+    .waitlist-form-wrap { max-width: 100%; }
+    .waitlist-form-row {
+      flex-direction: column;
+      border-radius: 20px;
+      padding: 12px;
+      gap: 8px;
+      align-items: stretch;
+    }
+    .waitlist-input {
+      padding: 13px 16px;
+      font-size: 1rem;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.12);
+    }
+    .hero-waitlist .waitlist-input {
+      background: rgba(255,255,255,0.5);
+    }
+    .waitlist-submit {
+      width: 100%;
+      justify-content: center;
+      border-radius: 12px;
+      padding: 14px 20px;
+    }
+    .hero-waitlist { width: 100%; }
   }
 
   /* ─── Waitlist Form ─── */
@@ -1119,6 +1142,7 @@
     gap: 6px;
   }
   /* Hero form variant — on cream bg */
+  .hero-waitlist { width: 100%; max-width: 520px; }
   .hero-waitlist .waitlist-form-row {
     background: rgba(255,255,255,0.7);
     border-color: rgba(42,26,46,0.12);
